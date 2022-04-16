@@ -4,7 +4,7 @@ let ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let cellSize = 10
+let cellSize = 5
 
 // state is boolean value. true = on, false = off
 // unless it's an outline, then none of that matters
@@ -20,19 +20,24 @@ class Cell {
   isDead() { return !this.state && !this.outline }
   isOutline() { return this.outline }
 
-  draw(x,y) {
+  draw(x,y,fillColor,outlineColor) {
     ctx.fillStyle = "white"
-    if (this.state) { ctx.fillStyle = "gray" }
-    if (this.outline) { ctx.fillStyle = "black" }
+    if (this.state) { ctx.fillStyle = fillColor }
+    if (this.outline) { ctx.fillStyle = outlineColor }
 
     ctx.fillRect(x,y,this.w,this.h)
   }
 }
 
 class Grid {
-  constructor(w,h) {
+  constructor(x,y,w,h,hue) {
+    this.x = x
+    this.y = y
     this.w = w
     this.h = h
+    this.hue = hue
+    this.fillColor = 'hsl('+this.hue+',100%,50%)'
+    this.outlineColor = 'hsl('+this.hue+',100%,25%)'
     this.arr = [[]]
 
     for (var i = 0; i < this.w; i++) {
@@ -46,7 +51,7 @@ class Grid {
   draw() {
     for (var x = 0; x < this.w; x++) {
       for (var y = 0; y < this.h; y++) {
-        this.arr[x][y].draw(x*cellSize, y*cellSize)
+        this.arr[x][y].draw(x*cellSize+this.x, y*cellSize+this.y, this.fillColor, this.outlineColor)
       }
     }
   }
@@ -135,11 +140,11 @@ function outline(grid) {
   }
 }
 
-
-let grid = new Grid(10,10)
-whiteNoise(grid)
-console.log(getNeighbours(grid,2,2))
-automata(grid,1)
-mirror(grid)
-outline(grid)
-grid.draw()
+function newSprite(x,y,hue) {
+  let grid = new Grid(x,y,10,10,hue)
+  whiteNoise(grid)
+  automata(grid,1)
+  mirror(grid)
+  outline(grid)
+  grid.draw()
+}
