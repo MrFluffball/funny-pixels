@@ -4,7 +4,7 @@ let ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let cellSize = 30
+let cellSize = 10
 
 // state is boolean value. true = on, false = off
 // unless it's an outline, then none of that matters
@@ -22,7 +22,7 @@ class Cell {
 
   draw(x,y) {
     ctx.fillStyle = "white"
-    if (this.state) { ctx.fillStyle = "grey" }
+    if (this.state) { ctx.fillStyle = "gray" }
     if (this.outline) { ctx.fillStyle = "black" }
 
     ctx.fillRect(x,y,this.w,this.h)
@@ -105,7 +105,18 @@ function automata(grid, steps) {
 }
 
 function mirror(grid) {
-  
+  let old_grid = grid
+  var grid_x = 5
+  var grid_y = 1
+  for (var x = 4; x > 0; x--) {
+    for (var y = 1; y < 9; y++) {
+      grid.arr[grid_x][grid_y] = old_grid.arr[x][y]
+      grid_y += 1
+    }
+    grid_x += 1
+    grid_y = 1
+  }
+
 }
 
 function outline(grid) {
